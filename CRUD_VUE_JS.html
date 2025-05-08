@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Actividad integradora 1. CRUD en Vue.js</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <Style>
+        body {
+            background: #009975;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        
+        *{
+            font-family: sans-serif;
+            box-sizing: border-box;
+        }
+        
+        .caja {
+            width: 500px;
+            border: 2px solid #ccc;
+            padding: 30px;
+            background: #fff;
+            border-radius: 15px;
+        }
+        
+        .check {
+            display: inline-block;
+            flex-direction: ;
+            flex-flow: ;
+        }
+        
+        input {
+            display: block;
+            border: 2px solid #ccc;
+            width: 95%;
+            padding: 10px;
+            margin: 10px auto;
+            border-radius: 5px;
+        }
+        
+        select {
+            display: block;
+            border: 2px solid #ccc;
+            width: 95%;
+            padding: 10px;
+            margin: 10px auto;
+            border-radius: 5px;
+        }
+        
+        label {
+            color: #888;
+            font-size: 18px;
+            padding: 10px;
+            float: left;
+        }
+        
+        button {
+            
+            background: darkslategray;
+            padding: 10px 15px;
+            color: #fff;
+            border-radius: 3px;
+            border: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        button:hover{
+            opacity: .7;
+        }
+
+        .btn2 {
+            background: gray;
+            font-size: 10px;
+        }
+
+        .titulo {
+            color: white;
+            font-size: 30px;
+            font-family: Arial Black; 
+            font-weight: bold;
+            margin-left: auto;
+            margin-right: auto;
+        }
+          
+        </Style>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <h1 class="titulo">Registro de Estudiantes</h1>
+    <br>
+    <div id="appAlumnos" class="caja">
+        <section class="form">
+            <form action="" class="text-center">
+                <label for="nombre"> Nombre: </label>
+                <input v-model="nombre" @keyup.enter="crearAlumno" type="text" class="form-control">
+                <label for="carrera"> Carrera: </label>
+                <input v-model="carrera" @keyup.enter="crearAlumno" type="text" name="carrera" class="form-control">
+                 <br>
+                <input @click="crearAlumno" type="button" value="Registrar" class="btn btn-success" style="background-color: gray">
+                <br><br>
+            </form>
+        </section>
+        <section class="data">
+            <table class="table">
+                <thead>
+                    <tr>
+                        
+                        <th scope="col" style="color:darkslategray">Nombre</th>
+                        <th scope="col" style="color:darkslategray">Carrera</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(alumno, index) in alumnos">
+                        
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+                                <input v-model="nombreActualizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+                                {{ alumno.nombre }}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+                                <input v-model="carreraActualizar" type="text" class="form-control">
+                            </span>
+                            <span v-else>
+                                {{ alumno.carrera }}
+                            </span>
+                        </td>
+                        <td>
+                            <span v-if="formActualizar && idActualizar == index">
+                                <button @click="guardarActualizacion(index)" class="btn2">Guardar</button>
+                            </span>
+                            <span v-else>
+                                <button @click="verFormActualizar(index)" class="btn2">Actualizar</button>
+                                <button @click="borraralumno(index)" class="btn2">Borrar</button>
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Vue({
+                el: '#appAlumnos',
+                data: {
+                    nombre: '',
+                    carrera: '',
+                    formActualizar: false,
+                    idActualizar: -1,
+                    nombreActualizar: '',
+                    carreraActualizar: '',
+                    alumnos: []
+                },
+                methods: {
+                    crearAlumno: function () {
+                        this.alumnos.push({
+                            id: + new Date(),
+                            nombre: this.nombre,
+                            carrera: this.carrera
+                        });
+                        this.nombre = '';
+                        this.carrera = '';
+                    },
+                    verFormActualizar: function (alumno_id) {
+                        this.idActualizar = alumno_id;
+                        this.nombreActualizar = this.alumnos[alumno_id].nombre;
+                        this.carreraActualizar = this.alumnos[alumno_id].carrera;
+                        this.formActualizar = true;
+                    },
+                    borraralumno: function (alumno_id) {
+                        this.alumnos.splice(alumno_id, 1);
+                    },
+                    guardarActualizacion: function (alumno_id) {
+                        this.formActualizar = false;
+                        this.alumnos[alumno_id].nombre = this.nombreActualizar;
+                        this.alumnos[alumno_id].carrera = this.carreraActualizar;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
